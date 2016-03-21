@@ -1,8 +1,7 @@
 var mongoose = require('mongoose')
-var Person = require('Person');
+var Person = mongoose.model('Person');
 
-module.exports = (function(){
-  ex
+module.exports = {
     index: function(req,res){
       Person.find({}, function(err,results){
         if(err){
@@ -11,6 +10,35 @@ module.exports = (function(){
           res.json(results);
         }
       })
+    },
+
+    create: function(req,res) {
+      var newPerson = new Person({name: req.params.name})
+      Person.save(function(err){
+        if(err){
+          for(var x in err.errors){
+            errors.push(err.errors[x].message);
+          }
+        res.redirect('/new/:name');
+        } else {
+          res.redirect('/')
+        }
+      })
+    },
+    
+    destroy: function(req,res){
+      Person.remove({name: req.params.name}, function(err, name){
+        res.redirect('/');
+      })
+    },
+
+    show: function(req,res){
+      Person.findOne({name: req.params.name}, function(err, name){
+        if(name == null){
+          res.json("name not found");
+        } else {
+          res.json(name);
+        }
+      })
     }
-  }
-})
+}
